@@ -7,7 +7,7 @@ The Sync GA4 cron job imports traffic and engagement data from Google Analytics 
 
 ## Endpoint
 
-```
+```text
 GET /api/cron/sync-ga4
 ```
 
@@ -34,7 +34,7 @@ For each eligible Google connection, the job:
 
 ## Execution flow
 
-```
+```text
 1. Authenticate request (verify CRON_SECRET)
 2. Fetch active subscriber + VIP user IDs
 3. Fetch all Google connections with Analytics scope for active users

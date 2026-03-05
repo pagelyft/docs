@@ -7,7 +7,7 @@ The SERP webhook is the endpoint DataForSEO calls after completing an asynchrono
 
 ## Endpoint
 
-```
+```text
 GET /api/webhooks/dataforseo
 ```
 
@@ -26,7 +26,7 @@ DataForSEO calls this URL with the following parameters substituted from its tas
 
 The full URL format sent to DataForSEO at task submission:
 
-```
+```text
 https://rank.pagelyft.studio/api/webhooks/dataforseo?secret={DATAFORSEO_WEBHOOK_SECRET}&id=$id&tag=$tag
 ```
 
@@ -45,7 +45,7 @@ The webhook decodes this tag to know which website and domain to look for in the
 
 ## Execution flow
 
-```
+```text
 1. Verify `secret` query parameter matches DATAFORSEO_WEBHOOK_SECRET
 2. Parse `id` (task ID) and `tag` (JSON) from query parameters
 3. Extract websiteId and domain from tag

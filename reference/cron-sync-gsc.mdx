@@ -7,7 +7,7 @@ The Sync GSC cron job imports search analytics data from Google Search Console f
 
 ## Endpoint
 
-```
+```text
 GET /api/cron/sync-gsc
 ```
 
@@ -36,7 +36,7 @@ For each eligible Google connection, the job:
 
 ## Execution flow
 
-```
+```text
 1. Authenticate request (verify CRON_SECRET)
 2. Fetch active subscriber + VIP user IDs
 3. Fetch all Google connections with Search Console scope for active users

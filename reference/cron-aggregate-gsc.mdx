@@ -7,7 +7,7 @@ The Aggregate GSC cron job is a storage optimization that runs once per month. I
 
 ## Endpoint
 
-```
+```text
 GET /api/cron/aggregate-gsc
 ```
 
@@ -48,7 +48,7 @@ For each website with qualifying rows, it:
 
 ## Execution flow
 
-```
+```text
 1. Authenticate request (verify CRON_SECRET)
 2. Find cutoff date (2 years ago from today)
 3. Query gsc_search_analytics for website_ids with old, non-aggregated rows

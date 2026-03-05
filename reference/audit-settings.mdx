@@ -18,7 +18,7 @@ Each website in RankLyft has its own audit settings stored in the `audit_setting
 
 ## Schedule options
 
-The `schedule` field controls how frequently the Track Positions cron job triggers a new audit for the website.
+The `schedule` field controls how frequently the [Run Scheduled Audits](/reference/cron-run-scheduled-audits) cron job triggers a new audit for the website.
 
 | Value | Trigger |
 |---|---|
@@ -34,7 +34,7 @@ The `schedule` field controls how frequently the Track Positions cron job trigge
 | `"monthly"` | Runs on the first day of each month |
 
 <Info>
-  Schedule checks happen inside the `/api/cron/track-positions` job. If the job is skipped or fails on a scheduled day, that audit run is missed — it does not catch up the next day.
+  Schedule checks happen inside the `/api/cron/run-scheduled-audits` job. If the job is skipped or fails on a scheduled day, that audit run is missed — it does not catch up the next day.
 </Info>
 
 ## JavaScript rendering

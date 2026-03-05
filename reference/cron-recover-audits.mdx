@@ -7,7 +7,7 @@ The Recover Audits cron job is a safety net that catches site audit crawls that 
 
 ## Endpoint
 
-```
+```text
 GET /api/cron/recover-audits
 ```
 
@@ -45,7 +45,7 @@ For audits between 15 minutes and 3 hours old with a valid `task_id`, the job qu
 
 ## Execution flow
 
-```
+```text
 1. Authenticate request (verify CRON_SECRET)
 2. Query site_audits: status = "crawling" AND started_at < 15 min ago
 3. If no stuck audits → return immediately

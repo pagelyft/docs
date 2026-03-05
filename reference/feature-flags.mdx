@@ -1,17 +1,13 @@
 ---
 title: "Feature Flags"
-description: "Optional features controlled by environment variables. Requires a redeploy to take effect."
+description: "Optional features managed from the Vercel Flags dashboard. Changes take effect immediately — no redeploy required."
 ---
 
-RankLyft uses environment-variable-based feature flags to enable optional sections that incur additional DataForSEO API costs. Flags are evaluated at runtime from `NEXT_PUBLIC_` variables, which means they are baked into the JavaScript bundle at build time.
-
-<Warning>
-  Changing a feature flag requires a new deployment to take effect. Updating the environment variable in Vercel alone does not change the behavior of an already-deployed build.
-</Warning>
+RankLyft uses [Vercel Flags](https://vercel.com/docs/flags/vercel-flags) to manage feature flags. Flags are configured in the Vercel dashboard and evaluated at runtime via the `@flags-sdk/vercel` adapter, so toggling a flag takes effect immediately without redeploying.
 
 ## Available flags
 
-### `NEXT_PUBLIC_FEATURE_BACKLINKS`
+### `backlinks`
 
 Enables the Backlinks section across the application.
 
@@ -26,7 +22,7 @@ Enables the Backlinks section across the application.
 
 ---
 
-### `NEXT_PUBLIC_FEATURE_AI_VISIBILITY`
+### `ai-visibility`
 
 Enables the AI Visibility section across the application.
 
@@ -39,40 +35,64 @@ Enables the AI Visibility section across the application.
 
 ---
 
-## How flags are checked
+### `multi-country`
 
-Flags are read from `process.env` in the shared `lib/flags.ts` module. Any component or route that conditionally renders feature-flagged UI imports from this file.
+Enables multi-country data on the Domain Overview page.
+
+**What it activates:**
+- Multi-country data table on the Domain Overview page
+
+---
+
+## How flags are evaluated
+
+Flags are defined in `lib/flags-vercel.ts` using the Flags SDK with the Vercel adapter:
 
 ```ts
-// lib/flags.ts
-export const FEATURE_BACKLINKS = process.env.NEXT_PUBLIC_FEATURE_BACKLINKS === "true";
-export const FEATURE_AI_VISIBILITY = process.env.NEXT_PUBLIC_FEATURE_AI_VISIBILITY === "true";
+// lib/flags-vercel.ts
+import { flag } from "flags/next"
+import { vercelAdapter } from "@flags-sdk/vercel"
+
+const adapter = process.env.FLAGS ? vercelAdapter() : undefined
+
+export const backlinksFlag = flag({
+  key: "backlinks",
+  description: "Enable backlinks analysis feature",
+  adapter,
+  defaultValue: false,
+  decide: () => false,
+  options: [
+    { value: false, label: "Off" },
+    { value: true, label: "On" },
+  ],
+})
 ```
 
-The value must be the string `"true"` exactly. Any other value — including `"1"`, `"yes"`, or `"TRUE"` — is treated as disabled.
+When the `FLAGS` environment variable is present (automatically provisioned by Vercel), the adapter connects to the Vercel Flags service and reads the dashboard value. When `FLAGS` is absent (local development without Vercel), flags fall back to `defaultValue`.
 
-## Enabling a flag
+## Toggling a flag
 
 1. Go to your Vercel project dashboard.
-2. Navigate to **Settings > Environment Variables**.
-3. Add or update the variable, setting its value to `"true"`.
-4. Redeploy the application. The easiest way is to run:
+2. Click **Flags** in the sidebar.
+3. Toggle the flag to **On** or **Off**.
 
-```bash
-vercel deploy --prod --yes
-```
+The change propagates globally in milliseconds — no redeploy needed.
 
-## Disabling a flag
+## Environment variables
 
-Set the variable's value to anything other than `"true"`, or delete the variable entirely, then redeploy.
+Vercel automatically manages two environment variables for the Flags system:
 
-<Tip>
-  To test a feature flag on a preview deployment before enabling it in production, set the variable only on the Preview environment scope in Vercel, then deploy a preview with `vercel deploy --yes`.
-</Tip>
+| Variable | Description |
+|---|---|
+| `FLAGS` | SDK connection key — auto-provisioned when you create your first flag in the dashboard |
+| `FLAGS_SECRET` | Used by the Flags Explorer toolbar for development-time overrides |
+
+These do not need to be set manually. For local development, run `vercel env pull` to sync them to `.env.local`.
 
 ## Flag status at a glance
 
 | Flag | Default | Requires DataForSEO commitment |
 |---|---|---|
-| `NEXT_PUBLIC_FEATURE_BACKLINKS` | Disabled | Yes — $100/mo |
-| `NEXT_PUBLIC_FEATURE_AI_VISIBILITY` | Disabled | Yes — $100/mo |
+| `backlinks` | Off | Yes — $100/mo |
+| `ai-visibility` | Off | Yes — $100/mo |
+| `multi-country` | Off | No |

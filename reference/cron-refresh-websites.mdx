@@ -7,7 +7,7 @@ The Refresh Websites cron job re-fetches DataForSEO data for every website in th
 
 ## Endpoint
 
-```
+```text
 POST /api/cron/refresh-websites
 ```
 
@@ -29,11 +29,11 @@ For each website, the job calls the following DataForSEO endpoints:
 | Historical data | `dataforseo_labs/google/domain_rank_overview/live` | `historical_data` table |
 | Backlinks summary | `backlinks/summary/live` | `websites` table |
 
-Backlinks data is only fetched when `NEXT_PUBLIC_FEATURE_BACKLINKS === "true"`.
+Backlinks data is only fetched when the `backlinks` [feature flag](/reference/feature-flags) is enabled.
 
 ## Execution flow
 
-```
+```text
 1. Authenticate request (verify CRON_SECRET)
 2. Fetch all websites from Supabase
 3. For each website (sequential):
@@ -41,7 +41,7 @@ Backlinks data is only fetched when `NEXT_PUBLIC_FEATURE_BACKLINKS === "true"`.
    b. Fetch top 100 ranked keywords → upsert to ranked_keywords
    c. Fetch top 50 relevant pages → upsert to relevant_pages
    d. Fetch historical rank data → upsert to historical_data
-   e. (If FEATURE_BACKLINKS) Fetch backlinks summary → upsert to websites
+   e. (If `backlinks` flag enabled) Fetch backlinks summary → upsert to websites
 4. Return 200 with summary of results
 ```
 

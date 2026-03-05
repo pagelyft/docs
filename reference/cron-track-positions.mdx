@@ -7,7 +7,7 @@ The Track Positions cron job runs daily and submits SERP ranking tasks to DataFo
 
 ## Endpoint
 
-```
+```text
 GET /api/cron/track-positions
 ```
 
@@ -32,7 +32,7 @@ Keywords are submitted in batches of 100 to stay within DataForSEO's batch size 
 - A `tag` containing `{ websiteId, domain }` — used by the webhook to route the result back to the correct website
 - A `pingback` URL pointing to the SERP webhook endpoint
 
-```
+```text
 Pingback URL format:
 https://rank.pagelyft.studio/api/webhooks/dataforseo?secret={DATAFORSEO_WEBHOOK_SECRET}&id=$id&tag=$tag
 ```
@@ -43,7 +43,7 @@ https://rank.pagelyft.studio/api/webhooks/dataforseo?secret={DATAFORSEO_WEBHOOK_
 
 ## Execution flow
 
-```
+```text
 1. Authenticate request (verify CRON_SECRET)
 2. Fetch active subscriber + VIP user IDs
 3. Fetch all active (non-deleted) websites for those users

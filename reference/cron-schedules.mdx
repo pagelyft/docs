@@ -78,7 +78,7 @@ See [Cron: Aggregate GSC](/reference/cron-aggregate-gsc) for full details.
 
 The jobs are staggered to avoid overlap and ensure resources are available. On a typical day, the daily jobs run in this order:
 
-```
+```text
 Daily timeline (UTC):
 05:00  Recover Audits (120s max)
 06:00  Track Positions (300s max)
@@ -89,7 +89,7 @@ Daily timeline (UTC):
 
 On Mondays, Refresh Websites runs before the daily jobs:
 
-```
+```text
 Monday timeline (UTC):
 04:59  Refresh Websites starts (300s max)
 05:00  Recover Audits starts
@@ -101,7 +101,7 @@ Monday timeline (UTC):
 
 On the 1st of each month, Aggregate GSC also runs:
 
-```
+```text
 1st-of-month timeline (UTC):
 03:00  Aggregate GSC (300s max)
 05:00  Recover Audits

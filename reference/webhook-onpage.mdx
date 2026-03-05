@@ -7,7 +7,7 @@ The OnPage webhook is the endpoint DataForSEO calls after completing an asynchro
 
 ## Endpoint
 
-```
+```text
 GET /api/webhooks/dataforseo/onpage
 ```
 
@@ -25,13 +25,13 @@ GET /api/webhooks/dataforseo/onpage
 
 The full URL format sent to DataForSEO at audit submission:
 
-```
+```text
 https://rank.pagelyft.studio/api/webhooks/dataforseo/onpage?secret={DATAFORSEO_WEBHOOK_SECRET}&id=$id&tag=$tag
 ```
 
 ## Tag structure
 
-The `tag` parameter is a JSON string encoded when the audit task was submitted by the Track Positions cron job:
+The `tag` parameter is a JSON string encoded when the audit task was submitted by the [Run Scheduled Audits](/reference/cron-run-scheduled-audits) cron job:
 
 ```json
 {
@@ -44,7 +44,7 @@ The `type: "onpage"` field disambiguates this webhook from the SERP webhook in s
 
 ## Execution flow
 
-```
+```text
 1. Verify `secret` query parameter matches DATAFORSEO_WEBHOOK_SECRET
 2. Parse `id` (task ID) and `tag` (JSON) from query parameters
 3. Confirm tag.type === "onpage"
@@ -125,7 +125,7 @@ The `maxDuration` for this endpoint is 120 seconds. Large audits (many pages wit
 
 ## Audit status lifecycle
 
-```
+```text
 [cron submits task] → status: "pending"
         ↓
 [DataForSEO crawls site]
@@ -149,7 +149,7 @@ DataForSEO cannot deliver webhooks to `localhost`. Use the same tunnel approach 
 
 ## Related
 
-- [Cron: Track Positions](/reference/cron-track-positions) — submits OnPage audit tasks that trigger this webhook
+- [Cron: Run Scheduled Audits](/reference/cron-run-scheduled-audits) — submits OnPage audit tasks that trigger this webhook
 - [Audit Settings](/reference/audit-settings) — controls crawl limits, JS rendering, and schedules
 - [Webhook: SERP](/reference/webhook-serp) — the position tracking equivalent
 - [Environment Variables](/reference/environment-variables) — `DATAFORSEO_WEBHOOK_SECRET` and `NEXT_PUBLIC_APP_URL`
