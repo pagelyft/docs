@@ -1,66 +1,70 @@
 ---
 title: "Refresh schedules"
-description: "RankLyft pulls fresh data on a fixed schedule. This page explains when each type of data updates and how to trigger an on-demand refresh."
+description: "When RankLyft pulls fresh data and how to trigger an on-demand refresh."
 ---
 
-RankLyft runs two automated cron jobs that keep your client data current. Most features refresh weekly. Position tracking refreshes daily. You can also trigger a manual refresh on any page that has a refresh button.
+RankLyft refreshes data on a schedule so your reports stay current without you needing to manually click refresh every day. All scheduled jobs run in **UTC**.
 
-## Weekly refresh — Mondays at 4:59 AM UTC
+## Daily DataForSEO refresh — starting at 4:00 AM UTC
 
-The weekly cron runs once per week for every website in your account. It updates the data types that change slowly enough that daily updates would not justify the API cost.
+Most DataForSEO-backed reports refresh daily in the early morning UTC window.
 
-| Data type | Feature |
-|---|---|
-| Domain overview metrics | Domain Overview |
-| Historical rank trends | Domain Overview (trend charts) |
-| Organic keyword rankings | Organic Rankings |
-| Top pages by traffic | Top Pages |
-| Backlink summary and history | Backlinks (if enabled) |
+| Data type | Feature | Typical time (UTC) |
+|---|---|---|
+| Domain overview metrics | Domain Overview | 04:00 |
+| Organic keyword set | Organic Rankings | 04:10 |
+| Top pages list | Top Pages | 04:20 |
+| Backlink summary | Backlinks | 04:30 |
+| AI Visibility snapshot (if enabled) | AI Visibility | 04:40 |
 
 <Info>
-  The weekly cron runs at 4:59 AM UTC on Mondays. In US Eastern time, that is 11:59 PM Sunday night (12:59 AM Monday during EDT). Data is usually available by the time you open RankLyft on Monday morning.
+  These pulls use pre-indexed vendor data (Labs/Backlinks/AI). A “daily sync” does not guarantee the vendor’s index changed since yesterday.
 </Info>
 
-## Daily refresh — 6:00 AM UTC
+## Weekly and monthly DataForSEO refreshes
 
-The daily cron runs every day and handles data types that require live queries.
+Some datasets are refreshed less frequently due to cost and volatility.
+
+| Data type | Feature | Schedule (UTC) |
+|---|---|---|
+| Backlink history + referring domains | Backlinks | Monday + Thursday 05:00 |
+| Tracked competitor metrics | Domain Overview (Tracked competitors) | Monday 05:30 |
+| Historical overview points | Domain Overview (trend charts) | 1st of month 03:00 |
+
+## Daily live refresh — 6:00 AM UTC
+
+Position Tracking runs live SERP checks daily.
 
 | Data type | Feature |
 |---|---|
 | Tracked keyword SERP positions | Position Tracking |
-| Scheduled site audit pages | Site Audit (when auto-schedule is on) |
 
-Position tracking submits a live Google search for every keyword you are tracking and records the result. Because this uses the SERP API rather than pre-indexed data, it captures actual real-time ranking positions — not estimates.
+## Daily site audit scheduling — 7:00 AM UTC
 
-<Tip>
-  Position tracking data for the current day appears after 6 AM UTC. If you check Position Tracking before 6 AM, you are seeing yesterday's positions.
-</Tip>
+If you enable a Site Audit schedule for a website, RankLyft checks it daily and starts a crawl when one is due.
+
+| Data type | Feature |
+|---|---|
+| Scheduled site audits | Site Audit |
+
+## Google data sync — twice daily
+
+If a website has Google integrations connected, RankLyft syncs those sources twice per day:
+
+| Data type | Feature | Schedule (UTC) |
+|---|---|---|
+| Google Search Console | Organic Rankings, Top Pages overlays | 07:30 and 19:30 |
+| Google Analytics 4 | Top Pages overlays, Dashboard cards | 08:00 and 20:00 |
 
 ## On-demand refreshes
 
-Every feature page in RankLyft includes a **Refresh** button. Clicking it immediately fires the same API call the cron would make and updates the displayed data. On-demand refreshes count against your DataForSEO balance the same as any other request.
-
-| Feature | Refresh behavior |
-|---|---|
-| Domain Overview | Re-fetches domain rank overview and historical data |
-| Organic Rankings | Re-fetches ranked keywords for the domain |
-| Top Pages | Re-fetches top relevant pages |
-| Position Tracking | Submits a new SERP task for all tracked keywords |
-| Site Audit | Starts a new full crawl |
-| AI Visibility | Runs a new live LLM query |
-
-Research tools (Keyword Overview, Keyword Research, Competitors, Keyword Gap) are always live — they run a fresh API call every time you submit a search, so they do not have a separate refresh concept.
+Most report pages include a **Refresh** action. On-demand refreshes run the same backend sync logic as the scheduled jobs.
 
 <Warning>
-  Running a manual refresh on Site Audit triggers a full recrawl of the domain. For large sites or sites with JavaScript rendering enabled, this can be expensive. See [DataForSEO cost breakdown](/data/dataforseo-costs) before refreshing audits on sites with thousands of pages.
+  Some refresh actions trigger vendor API calls (DataForSEO and Google). On-demand refreshes can increase vendor usage costs.
 </Warning>
 
 ## What triggers the first data pull
 
-When you add a new website to RankLyft, a full initial data fetch runs immediately — it does not wait for the next cron window. You get domain overview metrics, organic rankings, top pages, and historical data within seconds. Position tracking starts the following morning at the daily cron.
+When you add a new website, RankLyft fetches initial DataForSEO data immediately — it does not wait for the next cron window.
 
-## Checking when data was last updated
-
-Each feature page displays a "Last updated" timestamp near the top of the page. This reflects the last time RankLyft successfully received data from DataForSEO for that specific domain and data type.
-
-If a cron run fails for a specific domain (for example, due to a DataForSEO API error), the timestamp will not advance. RankLyft logs cron errors internally; if you notice stale data, contact your PageLyft administrator.

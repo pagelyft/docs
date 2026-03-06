@@ -17,14 +17,14 @@ Displays the website's domain (read-only). The domain is set when you add the we
 
 ### Display name
 
-An optional label that replaces the domain throughout the RankLyft UI. Useful when managing multiple sites for the same client or when the domain isn't descriptive (e.g., labeling `acme.com` as "Acme Corp").
+An optional label that replaces the domain throughout the RankLyft UI. Useful when managing multiple sites for the same client or when the domain isn't descriptive (for example, labeling `acme.com` as "Acme Corp").
 
 ### Danger zone
 
 The **Remove site** button permanently hides the website and all its associated SEO data from RankLyft. A confirmation dialog requires you to acknowledge the action before proceeding.
 
 <Warning>
-  Removing a site hides it and all its data. This action cannot be undone from the UI.
+  Removing a site hides it and all its data. This action cannot be undone from the UI. Contact your PageLyft admin if you need to restore a removed site.
 </Warning>
 
 ## Competitors
@@ -59,8 +59,6 @@ Choose how often audits run automatically:
 | Weekly | Crawl on a specific day of the week (selectable) |
 | Monthly | Crawl on the same day each month |
 
-Scheduled audits are executed by the [`cron-run-scheduled-audits`](/reference/cron-run-scheduled-audits) daily cron job.
-
 ### Crawl limits
 
 | Setting | Default | Range | Description |
@@ -74,12 +72,12 @@ Three toggles control how the crawler operates:
 
 | Toggle | Default | Description |
 |---|---|---|
-| Include subdomains | Off | Crawl pages on subdomains (e.g., `blog.example.com`) in addition to the root domain |
+| Include subdomains | Off | Crawl pages on subdomains (for example, `blog.example.com`) in addition to the root domain |
 | Respect sitemap | Off | Prioritize URLs listed in `sitemap.xml` |
 | JavaScript rendering | Off | Render pages with a headless browser before crawling. Required for SPAs and JS-heavy sites. |
 
 <Warning>
-  JavaScript rendering increases the cost per crawled page by approximately 10x. Only enable it if the site requires JavaScript to render its content. Most static or server-rendered sites do not need it.
+  JavaScript rendering takes significantly longer and uses more of your DataForSEO balance. Only enable it if the site requires JavaScript to display its content. Most static or server-rendered sites do not need it.
 </Warning>
 
 ## Notifications

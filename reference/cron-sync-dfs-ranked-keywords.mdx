@@ -1,0 +1,46 @@
+---
+title: "Cron: Sync DataForSEO Ranked Keywords"
+description: "Technical reference for the daily Organic Rankings sync job at /api/cron/sync-dfs-ranked-keywords."
+---
+
+Syncs the domain’s ranked keyword set (Organic Rankings) from DataForSEO Labs.
+
+## Endpoint
+
+```text
+GET /api/cron/sync-dfs-ranked-keywords
+POST /api/cron/sync-dfs-ranked-keywords
+```
+
+**Schedule:** Daily at 4:10 AM UTC (`10 4 * * *`)
+**Max duration:** 300 seconds
+**Auth:** `Authorization: Bearer {CRON_SECRET}`
+
+## Payload (optional)
+
+```json
+{
+  "websiteId": "uuid",
+  "trigger": "manual"
+}
+```
+
+## What it does
+
+For each target website, the job:
+
+1. Writes a `data_sync_jobs` row (`source=dataforseo`, `feature=ranked_keywords`)
+2. Fetches ranked keywords from DataForSEO Labs
+3. Upserts current-state rows into `domain_ranked_keywords`
+4. Persists a daily snapshot into `domain_ranked_keyword_snapshots`
+5. Updates `website_data_freshness` for `dataforseo/ranked_keywords`
+
+## Database tables
+
+| Table | Operation | Purpose |
+|---|---|---|
+| `data_sync_jobs` | Insert/Update | Job telemetry (status, errors) |
+| `website_data_freshness` | Upsert | “Last updated” timestamps per feature |
+| `domain_ranked_keywords` | Upsert | Current keyword rows shown in the UI |
+| `domain_ranked_keyword_snapshots` | Upsert | Daily snapshots used for range-aware comparisons |
+

@@ -1,0 +1,37 @@
+---
+title: "Cron: Sync DataForSEO Top Pages"
+description: "Technical reference for the daily Top Pages sync job at /api/cron/sync-dfs-top-pages."
+---
+
+Syncs the domain’s top organic pages (Top Pages) from DataForSEO Labs.
+
+## Endpoint
+
+```text
+GET /api/cron/sync-dfs-top-pages
+POST /api/cron/sync-dfs-top-pages
+```
+
+**Schedule:** Daily at 4:20 AM UTC (`20 4 * * *`)
+**Max duration:** 300 seconds
+**Auth:** `Authorization: Bearer {CRON_SECRET}`
+
+## What it does
+
+For each target website, the job:
+
+1. Writes a `data_sync_jobs` row (`source=dataforseo`, `feature=top_pages`)
+2. Fetches relevant pages from DataForSEO Labs
+3. Upserts current-state rows into `domain_relevant_pages` (including change metadata)
+4. Persists a daily snapshot into `domain_relevant_page_snapshots`
+5. Updates `website_data_freshness` for `dataforseo/top_pages`
+
+## Database tables
+
+| Table | Operation | Purpose |
+|---|---|---|
+| `data_sync_jobs` | Insert/Update | Job telemetry (status, errors) |
+| `website_data_freshness` | Upsert | “Last updated” timestamps per feature |
+| `domain_relevant_pages` | Upsert | Current page rows shown in the UI |
+| `domain_relevant_page_snapshots` | Upsert | Daily snapshots used for date-range views |
+

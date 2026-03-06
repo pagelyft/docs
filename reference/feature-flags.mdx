@@ -14,7 +14,9 @@ Enables the Backlinks section across the application.
 **What it activates:**
 - Backlinks page in each website's sidebar (`/{websiteSlug}/backlinks`)
 - Backlinks summary card on the website Dashboard
-- Backlinks data refresh in the weekly cron job (`/api/cron/refresh-websites`)
+- Backlinks data refresh via scheduled sync jobs:
+  - `/api/cron/sync-dfs-backlinks-summary` (daily)
+  - `/api/cron/sync-dfs-backlinks-details` (Monday + Thursday)
 
 **DataForSEO endpoint used:** `backlinks/summary`
 
@@ -28,6 +30,7 @@ Enables the AI Visibility section across the application.
 
 **What it activates:**
 - AI Visibility page in each website's sidebar (`/{websiteSlug}/ai-visibility`)
+- Scheduled AI Visibility snapshots (`/api/cron/sync-dfs-ai-visibility`)
 
 **DataForSEO endpoint used:** AI-related SERP and content APIs
 

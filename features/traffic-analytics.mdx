@@ -11,13 +11,7 @@ Traffic Analytics gives you a real-traffic view of a website's performance using
 
 ## Date range selector
 
-Use the date range selector at the top of the page to control the reporting window. The range is controlled by a `?days=` URL parameter:
-
-| Parameter | Default | Range |
-|---|---|---|
-| `days` | 30 | 1–365 |
-
-All metrics, charts, and tables on the page update to reflect the selected range. Period-over-period comparisons use the equivalent prior period (e.g., 30 days vs. the previous 30 days).
+Use the date range selector at the top of the page to control the reporting window. All metrics, charts, and tables on the page update to reflect the selected range. Period-over-period comparisons use the equivalent prior period (for example, 30 days compared to the previous 30 days).
 
 ## Summary metrics
 
@@ -57,9 +51,9 @@ A table showing user counts split by device type: Desktop, Mobile, and Tablet.
 A table of the top 10 countries by user count, paired with a geographic map visualization.
 
 <Tip>
-  Cross-reference Traffic Analytics with [Organic Rankings](/features/organic-rankings) to compare real GA4 traffic against DataForSEO's estimated organic traffic. This helps you calibrate how closely the estimates track actual performance.
+  Cross-reference Traffic Analytics with [Organic Rankings](/features/organic-rankings) to compare real GA4 traffic against estimated organic traffic. This helps you calibrate how closely the estimates track actual performance.
 </Tip>
 
 ## Data freshness
 
-GA4 data is synced daily via the `cron-sync-ga4` job. There is typically a 24–48 hour delay between when a visit occurs in GA4 and when it appears in RankLyft. See [Refresh Schedules](/data/refresh-schedules) for timing details.
+GA4 data syncs daily. There is typically a 24–48 hour delay between when a visit occurs in GA4 and when it appears in RankLyft.

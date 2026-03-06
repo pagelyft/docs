@@ -1,0 +1,36 @@
+---
+title: "Cron: Sync DataForSEO Backlinks Details"
+description: "Technical reference for the deeper Backlinks sync job at /api/cron/sync-dfs-backlinks-details."
+---
+
+Syncs “detail” backlink data: top referring domains and backlink history time series.
+
+## Endpoint
+
+```text
+GET /api/cron/sync-dfs-backlinks-details
+POST /api/cron/sync-dfs-backlinks-details
+```
+
+**Schedule:** Monday and Thursday at 5:00 AM UTC (`0 5 * * 1,4`)
+**Max duration:** 300 seconds
+**Auth:** `Authorization: Bearer {CRON_SECRET}`
+
+## What it does
+
+For each target website, the job:
+
+1. Writes a `data_sync_jobs` row (`source=dataforseo`, `feature=backlinks_details`)
+2. Fetches top referring domains from DataForSEO and upserts into `referring_domains`
+3. Fetches backlink history from DataForSEO and upserts into `backlink_history`
+4. Updates `website_data_freshness` for `dataforseo/backlinks_details`
+
+## Database tables
+
+| Table | Operation | Purpose |
+|---|---|---|
+| `data_sync_jobs` | Insert/Update | Job telemetry (status, errors) |
+| `website_data_freshness` | Upsert | “Last updated” timestamps per feature |
+| `referring_domains` | Upsert | Referring domains table in Backlinks |
+| `backlink_history` | Upsert | Backlink history chart data |
+

@@ -1,0 +1,63 @@
+---
+title: "Database tables"
+description: "Reference for the Supabase tables RankLyft uses for storage, snapshots, and sync telemetry."
+---
+
+This page documents the **Supabase tables** RankLyft uses to store feature data and track sync health. Table names are in the `public` schema unless otherwise noted.
+
+## Core entities
+
+| Table | Purpose |
+|---|---|
+| `websites` | One row per tracked website (domain, slug, settings). Most feature tables reference `websites.id` as `website_id`. |
+| `subscriptions` | Subscription status per user. Used by cron jobs to filter which websites to sync on scheduled runs. |
+| `tracked_keywords` | Keywords tracked by Position Tracking. |
+| `tracked_competitors` | User-selected competitor domains for a website plus cached overview metrics. |
+
+## DataForSEO (current-state tables)
+
+These tables store the most recent “current” view for a website.
+
+| Table | Feature | Notes |
+|---|---|---|
+| `domain_overviews` | Domain Overview | Aggregate organic/paid distribution metrics for the domain. |
+| `domain_ranked_keywords` | Organic Rankings | Current keyword rows with change metadata. |
+| `domain_relevant_pages` | Top Pages | Current page rows with change metadata. |
+| `domain_overview_history` | Domain Overview | Monthly historical overview points (month/year). |
+| `backlink_summaries` | Backlinks | Summary metrics for the domain’s backlink profile. |
+| `referring_domains` | Backlinks | Top referring domains list. |
+| `backlink_history` | Backlinks | Time series for backlinks/referring domains. |
+
+## Snapshot and time-window tables
+
+These tables are append-only (or append-mostly) snapshots used to power **time-range views** and trend comparisons.
+
+| Table | Feature | Snapshot key |
+|---|---|---|
+| `domain_ranked_keyword_snapshots` | Organic Rankings | (`website_id`, `location_code`, `language_code`, `snapshot_date`, `keyword`) |
+| `domain_relevant_page_snapshots` | Top Pages | (`website_id`, `location_code`, `language_code`, `snapshot_date`, `page_address`) |
+| `ai_visibility_snapshots` | AI Visibility | Append-only snapshots by `fetched_at` |
+| `ga4_page_daily_analytics` | Top Pages (GA4 overlay) | (`website_id`, `date`, `landing_page`) |
+
+## Sync telemetry tables
+
+RankLyft persists per-sync job outcomes and “last updated” timestamps so the UI can show freshness and the backend can debug issues.
+
+| Table | Purpose |
+|---|---|
+| `data_sync_jobs` | One row per sync attempt (source/feature/trigger/status, timestamps, error details). |
+| `website_data_freshness` | Per website + feature freshness (`last_success_at`, `last_attempt_at`, last error). |
+
+<Info>
+  In most UI views, the “Last updated” time comes from `website_data_freshness` when available, and falls back to feature row timestamps (for example, `fetched_at`) if a freshness row is not present.
+</Info>
+
+## Access control (RLS)
+
+Most feature tables use Row Level Security policies that allow a user to read rows where:
+
+- The row’s `website_id` belongs to a website they own (`websites.user_id = auth.uid()`), and
+- The feature’s RLS policy permits the requested operation (usually `select`).
+
+Cron jobs and webhooks use a Supabase **service role** client to bypass RLS for scheduled sync and background writes.
+

@@ -9,11 +9,23 @@ The Sync GA4 cron job imports traffic and engagement data from Google Analytics 
 
 ```text
 GET /api/cron/sync-ga4
+POST /api/cron/sync-ga4
 ```
 
-**Schedule:** Daily at 8:00 AM UTC (`0 8 * * *`)
+**Schedule:** Twice daily at 8:00 AM and 8:00 PM UTC (`0 8 * * *` and `0 20 * * *`)
 **Max duration:** 300 seconds
 **Auth:** `Authorization: Bearer {CRON_SECRET}`
+
+## Payload (optional)
+
+`POST` supports an optional JSON body for targeted runs:
+
+```json
+{
+  "websiteId": "uuid",
+  "trigger": "manual"
+}
+```
 
 ## Who it affects
 

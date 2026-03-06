@@ -1,0 +1,35 @@
+---
+title: "Cron: Sync DataForSEO AI Visibility"
+description: "Technical reference for the AI Visibility snapshot job at /api/cron/sync-dfs-ai-visibility."
+---
+
+Fetches AI Visibility data and persists a snapshot for each website. This job is gated by the `ai-visibility` feature flag.
+
+## Endpoint
+
+```text
+GET /api/cron/sync-dfs-ai-visibility
+POST /api/cron/sync-dfs-ai-visibility
+```
+
+**Schedule:** Daily at 4:40 AM UTC (`40 4 * * *`)
+**Max duration:** 300 seconds
+**Auth:** `Authorization: Bearer {CRON_SECRET}`
+
+## What it does
+
+For each target website, the job:
+
+1. Checks that the `ai-visibility` flag is enabled
+2. Writes a `data_sync_jobs` row (`source=dataforseo`, `feature=ai_visibility`)
+3. Calls DataForSEO AI Optimization endpoints and stores an append-only row in `ai_visibility_snapshots`
+4. Updates `website_data_freshness` for `dataforseo/ai_visibility`
+
+## Database tables
+
+| Table | Operation | Purpose |
+|---|---|---|
+| `data_sync_jobs` | Insert/Update | Job telemetry (status, errors) |
+| `website_data_freshness` | Upsert | “Last updated” timestamps per feature |
+| `ai_visibility_snapshots` | Insert | Snapshot rows for AI Visibility (mentions + top pages + metrics) |
+

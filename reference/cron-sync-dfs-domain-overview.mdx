@@ -1,0 +1,61 @@
+---
+title: "Cron: Sync DataForSEO Domain Overview"
+description: "Technical reference for the daily Domain Overview sync job at /api/cron/sync-dfs-domain-overview."
+---
+
+Syncs Domain Overview metrics for active websites by calling DataForSEO Labs and upserting the latest values into Supabase.
+
+## Endpoint
+
+```text
+GET /api/cron/sync-dfs-domain-overview
+POST /api/cron/sync-dfs-domain-overview
+```
+
+**Schedule:** Daily at 4:00 AM UTC (`0 4 * * *`)
+**Max duration:** 300 seconds
+**Auth:** `Authorization: Bearer {CRON_SECRET}`
+
+## Payload (optional)
+
+`POST` supports an optional JSON body for targeted runs:
+
+```json
+{
+  "websiteId": "uuid",
+  "trigger": "manual"
+}
+```
+
+- `websiteId` — when provided, syncs a single website only (no subscription filtering).
+- `trigger` — one of `manual`, `debug`, or `backfill` (defaults to `manual` for `POST`, `cron` for `GET`).
+
+## What it does
+
+For each target website, the job:
+
+1. Inserts a `data_sync_jobs` row (`source=dataforseo`, `feature=domain_overview`) and marks it `running`
+2. Calls DataForSEO Labs domain rank overview for the website’s domain
+3. Upserts the result into `domain_overviews`
+4. Marks the job `completed` (or `failed`) and updates `website_data_freshness`
+
+## Database tables
+
+| Table | Operation | Purpose |
+|---|---|---|
+| `websites` | Read | Select sync targets |
+| `subscriptions` | Read | Filter targets on scheduled runs |
+| `auth.users` | Read | Add VIP users to the active set |
+| `data_sync_jobs` | Insert/Update | Job telemetry (status, errors) |
+| `website_data_freshness` | Upsert | “Last updated” timestamps per feature |
+| `domain_overviews` | Upsert | Domain Overview metrics |
+
+## Manual trigger
+
+```bash
+curl -X POST https://rank.pagelyft.studio/api/cron/sync-dfs-domain-overview \
+  -H "Authorization: Bearer $CRON_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{"websiteId":"<WEBSITE_UUID>","trigger":"manual"}'
+```
+

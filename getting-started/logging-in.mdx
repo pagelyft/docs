@@ -1,31 +1,31 @@
 ---
 title: "Logging in"
-description: "How authentication works in RankLyft."
+description: "How to sign in to RankLyft and what to do if you have trouble accessing your account."
 ---
 
-RankLyft uses email and password authentication managed through Supabase. There is no self-service signup — all accounts are created by a PageLyft admin.
+RankLyft does not have a self-service signup. Your account is created for you by a PageLyft admin. Once your account is ready, you can sign in at any time.
 
-## How to log in
+## How to sign in
 
 1. Go to [rank.pagelyft.studio/login](https://rank.pagelyft.studio/login).
 2. Enter the email address and password your admin provided.
 3. Click **Sign In**.
 
-You'll be redirected to the main dashboard after a successful login.
+You'll be redirected to the main dashboard after a successful sign-in.
 
-## Authentication details
+## What to know
 
-**Email and password only.** RankLyft does not support Google, GitHub, or any other OAuth provider. You must use the email and password combination your admin set up for you.
+**Email and password only.** There is no option to sign in with Google, Apple, or any other third-party account. Use the email and password your admin set up for you.
 
-**No self-service signup.** There is no "Create an account" link. Accounts are provisioned by PageLyft staff. If you need access, contact your PageLyft account manager.
+**No self-service signup.** There is no "Create an account" option. If you need access, contact your PageLyft account manager.
 
-**Sessions auto-refresh.** RankLyft uses Supabase session tokens that refresh automatically in the background. You stay logged in across browser sessions without needing to re-enter your credentials.
+**You stay signed in.** RankLyft keeps you signed in across browser sessions automatically. You won't need to re-enter your credentials every time you open the app.
 
-**Session expiry.** If your session expires (for example, after an extended period of inactivity), RankLyft redirects you to `/login` automatically. After logging in again, you're returned to your original destination.
+**Session expiry.** If your session expires after an extended period of inactivity, RankLyft will redirect you to the sign-in page. After signing back in, you'll be returned to where you were.
 
-## Password issues
+## Trouble signing in
 
-RankLyft does not have a self-service password reset flow. If you've forgotten your password or need it changed, contact your PageLyft admin directly. They can reset your credentials through the Supabase dashboard.
+RankLyft does not have a self-service password reset. If you've forgotten your password or can't access your account, contact your PageLyft admin and they'll reset it for you.
 
 <Warning>
   Do not share your login credentials with other team members. If multiple people at your agency need access, ask your admin to create separate accounts for each person.

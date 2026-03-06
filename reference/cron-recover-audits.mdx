@@ -1,6 +1,6 @@
 ---
 title: "Cron: Recover Audits"
-description: "Technical reference for the daily stuck audit recovery job at /api/cron/recover-audits."
+description: "Technical reference for the recurring stuck audit recovery job at /api/cron/recover-audits."
 ---
 
 The Recover Audits cron job is a safety net that catches site audit crawls that get stuck. Normally, DataForSEO notifies the app via the [OnPage webhook](/reference/webhook-onpage) when a crawl finishes. If that webhook fails (network issue, timeout, bug), the audit would remain in `"crawling"` status forever. This job detects those stuck audits and either recovers them or marks them as failed.
@@ -11,7 +11,7 @@ The Recover Audits cron job is a safety net that catches site audit crawls that 
 GET /api/cron/recover-audits
 ```
 
-**Schedule:** Daily at 5:00 AM UTC (`0 5 * * *`)
+**Schedule:** Every 30 minutes (`*/30 * * * *`)
 **Max duration:** 120 seconds
 **Auth:** `Authorization: Bearer {CRON_SECRET}`
 
@@ -41,7 +41,7 @@ If the audit started more than **3 hours** ago, it is marked as `"failed"` regar
 For audits between 15 minutes and 3 hours old with a valid `task_id`, the job queries DataForSEO's OnPage summary endpoint to check the crawl progress:
 
 - **If `crawl_progress === "finished"`** — the crawl completed but the webhook was missed. The job calls `processAuditResults()` to extract issues, calculate the health score, and update the audit record to `"completed"`.
-- **If still crawling** — the audit is skipped and left in `"crawling"` status. It will be checked again on the next daily run.
+- **If still crawling** — the audit is skipped and left in `"crawling"` status. It will be checked again on the next run.
 
 ## Execution flow
 

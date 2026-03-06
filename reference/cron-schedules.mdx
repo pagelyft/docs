@@ -3,26 +3,35 @@ title: "Cron Schedules"
 description: "Overview of all scheduled background jobs, their triggers, and what each one does."
 ---
 
-RankLyft runs seven cron jobs configured in `vercel.ts`. All jobs run in the Vercel Production environment only. They do not run on Preview or Development deployments.
+RankLyft runs cron jobs configured in `vercel.ts`. All jobs run in the Vercel Production environment only. They do not run on Preview or Development deployments.
 
 ## Cron jobs
 
 | Job | Route | Schedule | Frequency |
 |---|---|---|---|
-| [Recover Audits](/reference/cron-recover-audits) | `/api/cron/recover-audits` | `0 5 * * *` | Every day at 5:00 AM UTC |
-| [Refresh Websites](/reference/cron-refresh-websites) | `/api/cron/refresh-websites` | `59 4 * * 1` | Every Monday at 4:59 AM UTC |
+| [Sync DataForSEO Domain Overview](/reference/cron-sync-dfs-domain-overview) | `/api/cron/sync-dfs-domain-overview` | `0 4 * * *` | Every day at 4:00 AM UTC |
+| [Sync DataForSEO Ranked Keywords](/reference/cron-sync-dfs-ranked-keywords) | `/api/cron/sync-dfs-ranked-keywords` | `10 4 * * *` | Every day at 4:10 AM UTC |
+| [Sync DataForSEO Top Pages](/reference/cron-sync-dfs-top-pages) | `/api/cron/sync-dfs-top-pages` | `20 4 * * *` | Every day at 4:20 AM UTC |
+| [Sync DataForSEO Backlinks Summary](/reference/cron-sync-dfs-backlinks-summary) | `/api/cron/sync-dfs-backlinks-summary` | `30 4 * * *` | Every day at 4:30 AM UTC |
+| [Sync DataForSEO AI Visibility](/reference/cron-sync-dfs-ai-visibility) | `/api/cron/sync-dfs-ai-visibility` | `40 4 * * *` | Every day at 4:40 AM UTC (if enabled) |
+| [Sync DataForSEO Backlinks Details](/reference/cron-sync-dfs-backlinks-details) | `/api/cron/sync-dfs-backlinks-details` | `0 5 * * 1,4` | Monday + Thursday at 5:00 AM UTC |
+| [Sync DataForSEO Tracked Competitors](/reference/cron-sync-dfs-competitors) | `/api/cron/sync-dfs-competitors` | `30 5 * * 1` | Every Monday at 5:30 AM UTC |
 | [Track Positions](/reference/cron-track-positions) | `/api/cron/track-positions` | `0 6 * * *` | Every day at 6:00 AM UTC |
 | [Run Scheduled Audits](/reference/cron-run-scheduled-audits) | `/api/cron/run-scheduled-audits` | `0 7 * * *` | Every day at 7:00 AM UTC |
 | [Sync GSC](/reference/cron-sync-gsc) | `/api/cron/sync-gsc` | `30 7 * * *` | Every day at 7:30 AM UTC |
 | [Sync GA4](/reference/cron-sync-ga4) | `/api/cron/sync-ga4` | `0 8 * * *` | Every day at 8:00 AM UTC |
+| [Sync GSC](/reference/cron-sync-gsc) | `/api/cron/sync-gsc` | `30 19 * * *` | Every day at 7:30 PM UTC |
+| [Sync GA4](/reference/cron-sync-ga4) | `/api/cron/sync-ga4` | `0 20 * * *` | Every day at 8:00 PM UTC |
+| [Sync DataForSEO Historical Overview](/reference/cron-sync-dfs-historical-overview) | `/api/cron/sync-dfs-historical-overview` | `0 3 1 * *` | 1st of each month at 3:00 AM UTC |
 | [Aggregate GSC](/reference/cron-aggregate-gsc) | `/api/cron/aggregate-gsc` | `0 3 1 * *` | 1st of each month at 3:00 AM UTC |
+| [Recover Audits](/reference/cron-recover-audits) | `/api/cron/recover-audits` | `*/30 * * * *` | Every 30 minutes |
 
 ## Authentication
 
 All endpoints require an `Authorization: Bearer {CRON_SECRET}` header. Vercel injects this header automatically when triggering cron jobs. If you call these endpoints manually (for testing or a forced run), you must include the header yourself.
 
 ```bash
-curl https://rank.pagelyft.studio/api/cron/refresh-websites \
+curl https://rank.pagelyft.studio/api/cron/sync-dfs-domain-overview \
   -H "Authorization: Bearer $CRON_SECRET"
 ```
 
@@ -30,81 +39,46 @@ curl https://rank.pagelyft.studio/api/cron/refresh-websites \
   Never expose `CRON_SECRET` in client-side code or commit it to version control. Treat it as a password.
 </Warning>
 
-## What each job does
-
-### Recover Audits — daily at 5:00 AM UTC
-
-Catches site audit crawls that got stuck in `"crawling"` status. Checks DataForSEO to see if the crawl actually finished (webhook was missed) and processes results if so. Marks audits older than 3 hours as failed.
-
-See [Cron: Recover Audits](/reference/cron-recover-audits) for full details.
-
-### Refresh Websites — weekly on Mondays at 4:59 AM UTC
-
-Re-fetches all DataForSEO data for every active website: domain overview, ranked keywords, relevant pages, historical data, backlinks summary, and tracked competitor metrics.
-
-See [Cron: Refresh Websites](/reference/cron-refresh-websites) for full details.
-
-### Track Positions — daily at 6:00 AM UTC
-
-Submits SERP tracking tasks to DataForSEO for all tracked keywords in batches of 100. Results arrive asynchronously via the [SERP webhook](/reference/webhook-serp).
-
-See [Cron: Track Positions](/reference/cron-track-positions) for full details.
-
-### Run Scheduled Audits — daily at 7:00 AM UTC
-
-Checks each website's `audit_schedule` setting and triggers a new site audit crawl if one is due today (based on daily, weekly, or monthly configuration). Uses the saved `audit_settings` for crawl parameters.
-
-See [Cron: Run Scheduled Audits](/reference/cron-run-scheduled-audits) for full details.
-
-### Sync GSC — daily at 7:30 AM UTC
-
-Imports the last 3 days of Google Search Console search analytics data for all users with a connected GSC account. Refreshes OAuth tokens, syncs data, and rebuilds discovered keyword lists.
-
-See [Cron: Sync GSC](/reference/cron-sync-gsc) for full details.
-
-### Sync GA4 — daily at 8:00 AM UTC
-
-Imports Google Analytics 4 traffic data for all users with a connected Google account. Fetches the last 3 days of daily rows and the last 30 days of page/country aggregated data.
-
-See [Cron: Sync GA4](/reference/cron-sync-ga4) for full details.
-
-### Aggregate GSC — monthly on the 1st at 3:00 AM UTC
-
-Storage optimization. Compresses daily GSC rows older than 2 years into weekly summaries (summed clicks/impressions, weighted average position).
-
-See [Cron: Aggregate GSC](/reference/cron-aggregate-gsc) for full details.
-
 ## Execution order
 
-The jobs are staggered to avoid overlap and ensure resources are available. On a typical day, the daily jobs run in this order:
+The jobs are staggered to reduce overlap and spread vendor API load. On a typical day, the schedule is:
 
 ```text
 Daily timeline (UTC):
-05:00  Recover Audits (120s max)
+04:00  Sync DataForSEO Domain Overview (300s max)
+04:10  Sync DataForSEO Ranked Keywords (300s max)
+04:20  Sync DataForSEO Top Pages (300s max)
+04:30  Sync DataForSEO Backlinks Summary (300s max)
+04:40  Sync DataForSEO AI Visibility (300s max, if enabled)
 06:00  Track Positions (300s max)
 07:00  Run Scheduled Audits (300s max)
 07:30  Sync GSC (300s max)
 08:00  Sync GA4 (300s max)
+19:30  Sync GSC (300s max)
+20:00  Sync GA4 (300s max)
+*/30  Recover Audits (runs every 30 minutes)
 ```
 
-On Mondays, Refresh Websites runs before the daily jobs:
+On Mondays and Thursdays, the backlinks details job also runs:
 
 ```text
-Monday timeline (UTC):
-04:59  Refresh Websites starts (300s max)
-05:00  Recover Audits starts
-06:00  Track Positions starts
-07:00  Run Scheduled Audits starts
-07:30  Sync GSC starts
-08:00  Sync GA4 starts
+Mon/Thu extras (UTC):
+05:00  Sync DataForSEO Backlinks Details (300s max)
 ```
 
-On the 1st of each month, Aggregate GSC also runs:
+On Mondays, tracked competitor refresh also runs:
+
+```text
+Monday extras (UTC):
+05:30  Sync DataForSEO Tracked Competitors (300s max)
+```
+
+On the 1st of each month, monthly jobs run:
 
 ```text
 1st-of-month timeline (UTC):
+03:00  Sync DataForSEO Historical Overview (300s max)
 03:00  Aggregate GSC (300s max)
-05:00  Recover Audits
 06:00  Track Positions
 07:00  Run Scheduled Audits
 07:30  Sync GSC
@@ -117,7 +91,14 @@ Most jobs only process websites belonging to users with an active subscription o
 
 | Job | Requires active subscription? |
 |---|---|
-| Refresh Websites | Yes |
+| Sync DataForSEO Domain Overview | Yes |
+| Sync DataForSEO Ranked Keywords | Yes |
+| Sync DataForSEO Top Pages | Yes |
+| Sync DataForSEO Backlinks Summary | Yes |
+| Sync DataForSEO Backlinks Details | Yes |
+| Sync DataForSEO AI Visibility | Yes |
+| Sync DataForSEO Tracked Competitors | Yes |
+| Sync DataForSEO Historical Overview | Yes |
 | Track Positions | Yes |
 | Run Scheduled Audits | Yes |
 | Sync GSC | Yes |
@@ -131,13 +112,22 @@ Most jobs only process websites belonging to users with an active subscription o
 import type { VercelConfig } from "@vercel/config/v1";
 export const config: VercelConfig = {
   crons: [
-    { path: "/api/cron/refresh-websites", schedule: "59 4 * * 1" },
+    { path: "/api/cron/sync-dfs-domain-overview", schedule: "0 4 * * *" },
+    { path: "/api/cron/sync-dfs-ranked-keywords", schedule: "10 4 * * *" },
+    { path: "/api/cron/sync-dfs-top-pages", schedule: "20 4 * * *" },
+    { path: "/api/cron/sync-dfs-backlinks-summary", schedule: "30 4 * * *" },
+    { path: "/api/cron/sync-dfs-ai-visibility", schedule: "40 4 * * *" },
+    { path: "/api/cron/sync-dfs-backlinks-details", schedule: "0 5 * * 1,4" },
+    { path: "/api/cron/sync-dfs-competitors", schedule: "30 5 * * 1" },
+    { path: "/api/cron/sync-dfs-historical-overview", schedule: "0 3 1 * *" },
     { path: "/api/cron/track-positions", schedule: "0 6 * * *" },
     { path: "/api/cron/run-scheduled-audits", schedule: "0 7 * * *" },
     { path: "/api/cron/sync-gsc", schedule: "30 7 * * *" },
+    { path: "/api/cron/sync-gsc", schedule: "30 19 * * *" },
     { path: "/api/cron/sync-ga4", schedule: "0 8 * * *" },
+    { path: "/api/cron/sync-ga4", schedule: "0 20 * * *" },
     { path: "/api/cron/aggregate-gsc", schedule: "0 3 1 * *" },
-    { path: "/api/cron/recover-audits", schedule: "0 5 * * *" },
+    { path: "/api/cron/recover-audits", schedule: "*/30 * * * *" },
   ],
 };
 ```
@@ -148,11 +138,11 @@ export const config: VercelConfig = {
 
 ## Manual execution
 
-You can trigger any job manually from the command line. This is useful after adding new websites, fixing a failed run, or testing changes.
+You can trigger any job manually from the command line.
 
 ```bash
-# Weekly data refresh
-curl https://rank.pagelyft.studio/api/cron/refresh-websites \
+# DataForSEO sync (example: Domain Overview)
+curl https://rank.pagelyft.studio/api/cron/sync-dfs-domain-overview \
   -H "Authorization: Bearer $CRON_SECRET"
 
 # Daily position tracking
@@ -183,3 +173,4 @@ curl https://rank.pagelyft.studio/api/cron/recover-audits \
 <Tip>
   You can also trigger cron jobs from the Vercel dashboard under **Settings > Cron Jobs > Run now**, which injects the auth header automatically.
 </Tip>
+

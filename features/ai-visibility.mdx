@@ -3,11 +3,11 @@ title: "AI Visibility"
 description: "Track how often a client's domain appears in AI-generated answers across ChatGPT, Google AI Overviews, Gemini, Perplexity, and Claude."
 ---
 
-AI Visibility tracks whether a client's domain is being cited by large language models when users ask questions related to their business. As more searches resolve in AI-generated answers rather than traditional blue-link results, this report helps you monitor a channel that standard rank tracking does not cover.
+AI Visibility tracks whether a client's domain is being cited by AI platforms when users ask questions related to their business. As more searches resolve in AI-generated answers rather than traditional blue-link results, this report helps you monitor a channel that standard rank tracking does not cover.
 
-<Warning>
-  AI Visibility is a feature-flagged report. It must be enabled via the `ai-visibility` flag in the [Vercel Flags dashboard](/reference/feature-flags) before it appears in the sidebar. Contact your admin if you expect to see this report but don't see it in the navigation.
-</Warning>
+<Info>
+  AI Visibility is an optional feature that must be enabled on your account. Contact your PageLyft admin if you expect to see this report but don't see it in the navigation.
+</Info>
 
 ## Platforms tracked
 
@@ -69,3 +69,12 @@ Pages with high mentions but low citations are appearing in AI context but not b
 Traditional organic rankings track whether a domain appears on the Google SERP for a query. AI Visibility tracks whether the domain appears inside an AI-generated answer — which may or may not include a clickable link. A domain can have strong traditional rankings but zero AI visibility, or vice versa.
 
 Monitor both. As AI search features expand, AI Visibility will become an increasingly important part of the client reporting conversation.
+
+## Data freshness
+
+AI Visibility is refreshed in two ways:
+
+- A **daily snapshot** used for trends and “last updated”
+- An **on-demand refresh** when you manually refresh the report
+
+See [Data freshness](/data/data-freshness) for timing and lag details.

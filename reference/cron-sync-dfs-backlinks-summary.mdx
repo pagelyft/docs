@@ -1,0 +1,35 @@
+---
+title: "Cron: Sync DataForSEO Backlinks Summary"
+description: "Technical reference for the daily Backlinks summary sync job at /api/cron/sync-dfs-backlinks-summary."
+---
+
+Syncs backlink summary metrics for each website by calling DataForSEO Backlinks.
+
+## Endpoint
+
+```text
+GET /api/cron/sync-dfs-backlinks-summary
+POST /api/cron/sync-dfs-backlinks-summary
+```
+
+**Schedule:** Daily at 4:30 AM UTC (`30 4 * * *`)
+**Max duration:** 300 seconds
+**Auth:** `Authorization: Bearer {CRON_SECRET}`
+
+## What it does
+
+For each target website, the job:
+
+1. Writes a `data_sync_jobs` row (`source=dataforseo`, `feature=backlinks_summary`)
+2. Fetches backlink summary metrics from DataForSEO
+3. Upserts the result into `backlink_summaries`
+4. Updates `website_data_freshness` for `dataforseo/backlinks_summary`
+
+## Database tables
+
+| Table | Operation | Purpose |
+|---|---|---|
+| `data_sync_jobs` | Insert/Update | Job telemetry (status, errors) |
+| `website_data_freshness` | Upsert | “Last updated” timestamps per feature |
+| `backlink_summaries` | Upsert | Summary metrics displayed in Backlinks |
+

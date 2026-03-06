@@ -1,6 +1,6 @@
 ---
 title: "Cron: Sync GSC"
-description: "Technical reference for the daily Google Search Console data sync job at /api/cron/sync-gsc."
+description: "Technical reference for the twice-daily Google Search Console data sync job at /api/cron/sync-gsc."
 ---
 
 The Sync GSC cron job imports search analytics data from Google Search Console for all users who have connected their Google account with Search Console permissions. It refreshes OAuth tokens, fetches the last 3 days of search performance data, and rebuilds discovered keyword lists.
@@ -9,11 +9,23 @@ The Sync GSC cron job imports search analytics data from Google Search Console f
 
 ```text
 GET /api/cron/sync-gsc
+POST /api/cron/sync-gsc
 ```
 
-**Schedule:** Daily at 7:30 AM UTC (`30 7 * * *`)
+**Schedule:** Twice daily at 7:30 AM and 7:30 PM UTC (`30 7 * * *` and `30 19 * * *`)
 **Max duration:** 300 seconds
 **Auth:** `Authorization: Bearer {CRON_SECRET}`
+
+## Payload (optional)
+
+`POST` supports an optional JSON body for targeted runs:
+
+```json
+{
+  "websiteId": "uuid",
+  "trigger": "manual"
+}
+```
 
 ## Who it affects
 

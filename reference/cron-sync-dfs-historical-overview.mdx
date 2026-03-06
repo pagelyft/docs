@@ -1,0 +1,35 @@
+---
+title: "Cron: Sync DataForSEO Historical Overview"
+description: "Technical reference for the monthly historical overview sync job at /api/cron/sync-dfs-historical-overview."
+---
+
+Refreshes monthly historical domain overview points (Domain Overview trend charts) from DataForSEO Labs.
+
+## Endpoint
+
+```text
+GET /api/cron/sync-dfs-historical-overview
+POST /api/cron/sync-dfs-historical-overview
+```
+
+**Schedule:** 1st of each month at 3:00 AM UTC (`0 3 1 * *`)
+**Max duration:** 300 seconds
+**Auth:** `Authorization: Bearer {CRON_SECRET}`
+
+## What it does
+
+For each target website, the job:
+
+1. Writes a `data_sync_jobs` row (`source=dataforseo`, `feature=historical_overview`)
+2. Fetches historical rank overview data from DataForSEO Labs
+3. Upserts monthly rows into `domain_overview_history`
+4. Updates `website_data_freshness` for `dataforseo/historical_overview`
+
+## Database tables
+
+| Table | Operation | Purpose |
+|---|---|---|
+| `data_sync_jobs` | Insert/Update | Job telemetry (status, errors) |
+| `website_data_freshness` | Upsert | “Last updated” timestamps per feature |
+| `domain_overview_history` | Upsert | Monthly historical overview points |
+

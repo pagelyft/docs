@@ -9,8 +9,8 @@
   },
   "favicon": "/favicon.svg",
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/ranklyft-logo-light.svg",
+    "dark": "/logo/ranklyft-logo-dark.svg"
   },
   "navbar": {
     "links": [
@@ -53,17 +53,29 @@
         "public": true,
         "groups": [
           {
-            "group": "Website reports",
+            "group": "SEO Toolkit",
+            "pages": [
+              "features/seo-toolkit",
+              "features/pricing-limits"
+            ]
+          },
+          {
+            "group": "SEO reports",
             "pages": [
               "features/dashboard",
               "features/domain-overview",
               "features/organic-rankings",
-              "features/position-tracking",
-              "features/traffic-analytics",
               "features/top-pages",
               "features/backlinks",
-              "features/site-audit",
+              "features/traffic-analytics",
               "features/ai-visibility"
+            ]
+          },
+          {
+            "group": "Tracking & audits",
+            "pages": [
+              "features/position-tracking",
+              "features/site-audit"
             ]
           },
           {
@@ -113,6 +125,7 @@
             "pages": [
               "reference/environment-variables",
               "reference/feature-flags",
+              "reference/database-tables",
               "reference/cron-schedules",
               "reference/audit-settings"
             ]
@@ -120,7 +133,14 @@
           {
             "group": "Internal endpoints",
             "pages": [
-              "reference/cron-refresh-websites",
+              "reference/cron-sync-dfs-domain-overview",
+              "reference/cron-sync-dfs-ranked-keywords",
+              "reference/cron-sync-dfs-top-pages",
+              "reference/cron-sync-dfs-backlinks-summary",
+              "reference/cron-sync-dfs-backlinks-details",
+              "reference/cron-sync-dfs-ai-visibility",
+              "reference/cron-sync-dfs-competitors",
+              "reference/cron-sync-dfs-historical-overview",
               "reference/cron-track-positions",
               "reference/cron-run-scheduled-audits",
               "reference/cron-sync-gsc",

@@ -1,71 +1,76 @@
 ---
 title: "Top Pages"
-description: "The top pages driving organic traffic to a domain, with estimated traffic value, change tracking, and optional GA4 real traffic overlay."
+description: "The top pages driving organic visibility for a domain, with range-aware change tracking and optional Google overlays."
 ---
 
-Top Pages shows which URLs on a client's site are actually delivering organic visitors. It surfaces the highest-traffic pages by estimated organic visits, giving you a quick read on where the site's SEO value is concentrated.
+Top Pages shows which URLs on a client’s site are driving organic visibility. It surfaces the pages with the highest estimated traffic value, helping you quickly see where SEO performance is concentrated.
 
-When [Google Analytics 4](/features/google-integrations) is connected, real traffic columns are overlaid on the table, letting you compare DataForSEO estimates against actual sessions and engagement.
+## Date range and device
 
-## Table columns
+Top Pages supports a date-range selector (for example, 7/14/30/60/90 days). The range controls:
+
+- The comparison window used for change tracking
+- The date window used for Google overlays (when connected)
+
+If Google Search Console is connected, you can also filter by device (All/Desktop/Mobile/Tablet).
+
+## Table columns (DataForSEO)
 
 | Column | Description |
 |---|---|
 | Page URL | The full URL of the page |
-| Change | Movement since the previous data pull: **New**, **Up**, **Down**, or **Lost** |
-| Keywords | The number of keywords this page ranks for in the top 100 |
-| Avg. Position | Average ranking position across all keywords the page ranks for |
-| Visibility | Keyword visibility score for the page |
+| Change | Movement relative to the selected range: **New**, **Up**, **Down**, or **Lost** |
+| Keywords | The number of keywords this page ranks for |
+| Avg. Position | Average ranking position across the page’s ranking keywords |
+| Visibility | Visibility score (estimated traffic value) for the page |
 
-## Google Analytics 4 overlay
+## Google overlays (optional)
 
-When a GA4 property is connected, three additional columns appear in the table:
+When Google integrations are connected, Top Pages can overlay real performance data.
+
+### Google Analytics 4 (GA4)
 
 | Column | Description |
 |---|---|
-| Sessions (GA4) | Real session count from Google Analytics for this page |
-| Bounce Rate (GA4) | Percentage of single-page sessions from GA4 |
-| Conversions (GA4) | Conversion events attributed to this page in GA4 |
-
-GA4 data is matched to pages by URL path. The overlay gives you ground-truth engagement data alongside DataForSEO's traffic estimates.
+| Sessions (GA4) | Sessions attributed to this page |
+| Bounce Rate (GA4) | Single-page session rate |
+| Conversions (GA4) | Conversion events attributed to this page |
 
 <Info>
-  GA4 columns only appear when a GA4 property is connected to the website. See [Google Integrations](/features/google-integrations) for setup instructions.
+  GA4 overlays appear only when GA4 is connected and you are viewing **All devices**.
 </Info>
 
-<Tip>
-  Compare the DataForSEO Visibility score against GA4 Sessions to assess how closely the estimates track actual traffic. Pages where estimates diverge significantly from GA4 data may indicate keyword cannibalization or traffic from non-organic sources.
-</Tip>
+### Google Search Console (GSC)
+
+| Column | Description |
+|---|---|
+| Clicks (GSC) | Clicks from Google search results |
+| Impressions (GSC) | Impressions in Google search results |
+| CTR (GSC) | Click-through rate |
+| Position (GSC) | Average position over the selected window |
 
 ## Change tracking
 
-Each page is compared against the previous pull's data. The Change column reflects whether the page gained traffic, lost traffic, appeared for the first time, or dropped out entirely:
+Top Pages uses daily snapshots to support range-aware comparisons. The Change badge is calculated by comparing the latest snapshot to the snapshot at the start of the selected range:
 
 | Badge | Meaning |
 |---|---|
-| New | The page entered the top results for the first time |
-| Up | The page's metrics improved since the last pull |
-| Down | The page's metrics decreased since the last pull |
-| Lost | The page dropped out of the results |
+| New | The page appears now but did not appear at the start of the window |
+| Up | Visibility increased over the window |
+| Down | Visibility decreased over the window |
+| Lost | The page appeared at the start of the window but no longer appears now |
 
 <Tip>
-  Pages marked **Lost** are worth investigating. A page that previously drove significant traffic and dropped out may have experienced a ranking drop, a crawl issue, or been removed. Cross-reference with Organic Rankings to see if its primary keywords also dropped.
+  Pages marked **Lost** are worth investigating. Cross-reference with Organic Rankings to see if the page’s primary keywords also declined.
 </Tip>
-
-## How to use Top Pages
-
-**Identify revenue-critical pages.** Sort by visibility to see which pages generate the most organic presence. These are the pages where on-page issues or technical problems have the highest potential business impact.
-
-**Find content gaps.** Pages with high keyword counts but low visibility are ranking for many terms in weak positions. Consider whether those pages could be optimized to target higher-value queries.
-
-**Spot early declines.** Pages marked Down often signal a ranking problem before it becomes visible in overall traffic numbers. Check these pages in Organic Rankings to identify which specific keywords are falling.
-
-**Brief content teams.** Export the table and share with content or development teams to prioritize page-level work based on actual traffic impact rather than assumptions.
 
 ## Exporting data
 
-Click the **Export CSV** button to download the current filtered view. The CSV export includes GA4 columns when they are visible, so what you see in the table is what you get in the download.
+Click **Export CSV** to download the current view. The export respects active range/device filters and includes Google overlay columns when they are visible.
 
 ## Data freshness
 
-Top Pages data is fetched when you add a website and refreshed on the standard schedule. GA4 overlay data syncs daily via `cron-sync-ga4`. See [Refresh Schedules](/data/refresh-schedules) for update frequency.
+Top Pages includes multiple data sources. The page shows freshness per source (DataForSEO, GA4, GSC) so you can tell which part of the view is stale.
+
+See [Refresh schedules](/data/refresh-schedules) for timing details.
+

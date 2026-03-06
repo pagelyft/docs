@@ -51,20 +51,17 @@ Above the table, a horizontal bar shows the proportion of ranked keywords across
 
 ## Filters
 
-Use URL-based filters to narrow the table. Filters are reflected in the URL so you can share filtered views:
+Use filters to narrow the table. Filters are reflected in the URL so you can share filtered views:
 
 | Filter | Parameter | Description |
 |---|---|---|
-| Tab | `tab` | Filter by movement type: All, New, Up, Down, or Lost |
-| Position range | `pos` | Quick-filter pills for common ranges (Top 3, 4–10, 11–20, etc.) |
-| Min position | `pos_min` | Show only keywords at or below this position number |
-| Max position | `pos_max` | Show only keywords at or above this position number |
-| Change type | `change` | Filter by movement: `new`, `up`, `down`, or `lost` |
-| Device | `device` | Filter by device type (Desktop, Mobile, Tablet) |
-| Days | `days` | Time range for GSC data |
+| Tab | `tab` | Movement type: `all`, `new`, `up`, `down`, or `lost` |
+| Position range | `pos` | Position buckets in `min-max` form (for example, `11-20`) |
+| Device | `device` | `ALL`, `DESKTOP`, `MOBILE`, or `TABLET` (affects GSC overlay) |
+| Days | `days` | GSC window: `7`, `28`, `90`, `180`, or `365` |
 
 <Tip>
-  To build a striking-distance report, set `pos_min=11` and `pos_max=20`. You'll see every keyword within range of page one.
+  To build a striking-distance report, set `pos=11-20`. You'll see every keyword within range of page one.
 </Tip>
 
 ## Exporting data

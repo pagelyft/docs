@@ -33,21 +33,26 @@ Domain overview uses a different pricing tier because it returns richer aggregat
 | `googleDomainRankOverviewLive` | $0.10/task | $0.001/domain | Domain Overview |
 
 <Info>
-  Domain overview costs 10x the standard Labs task fee. For a single domain, expect $0.101 per call. Across 15 domains fetched weekly, that is about $1.52/month for domain overview alone.
+  Domain overview costs 10x the standard Labs task fee. For a single domain, expect $0.101 per call. Across 15 domains fetched daily, that is about $45.45/month for domain overview alone.
 </Info>
 
-### Estimated Labs cost per domain per week
+### Estimated Labs cost per domain (daily sync)
 
-This assumes RankLyft fetches domain overview, 100 ranked keywords, 50 top pages, and 12 months of historical data per domain:
+This assumes RankLyft syncs domain overview, 100 ranked keywords, and 50 top pages per domain each day:
 
 | API call | Task fee | Result fee | Subtotal |
 |---|---|---|---|
 | Domain overview (1 domain) | $0.10 | $0.001 | $0.101 |
 | Ranked keywords (100 results) | $0.01 | $0.01 | $0.02 |
 | Top pages (50 results) | $0.01 | $0.005 | $0.015 |
-| Historical overview (12 months) | $0.01 | $0.0012 | $0.0112 |
-| **Total per domain per week** | | | **~$0.15** |
-| **Total for 15 domains per month** | | | **~$9.00** |
+| **Total per domain per day** | | | **~$0.136** |
+| **Total for 15 domains per month (30 days)** | | | **~$61.20** |
+
+Historical overview is synced monthly (on the 1st). Per domain, it adds:
+
+- Task fee: $0.01
+- Result fee (12 months): ~$0.0012
+- Total: **~$0.0112/domain/month**
 
 ## SERP API — Position Tracking
 
@@ -83,15 +88,16 @@ The Backlinks API requires a **$100/month minimum commitment** with DataForSEO, 
 | `referring_domains` | $0.02/request | $0.00003/row | Referring Domains |
 | `history` | $0.02/request | $0.00003/row | Backlink History |
 
-### Estimated Backlinks cost per domain per week
+### Estimated Backlinks cost (daily summary + twice-weekly details)
 
-| API call | Request fee | Row fee (100 rows) | Subtotal |
-|---|---|---|---|
-| Summary | $0.02 | — | $0.02 |
-| Referring domains (100 domains) | $0.02 | $0.003 | $0.023 |
-| History (100 months) | $0.02 | $0.003 | $0.023 |
-| **Total per domain per week** | | | **~$0.066** |
-| **Total for 15 domains per month** | | | **~$3.96 + $100 minimum** |
+| API call | Schedule | Request fee | Row fee (100 rows) | Subtotal |
+|---|---|---|---|---|
+| Summary | Daily | $0.02 | — | ~$0.14/week |
+| Referring domains (100 domains) | Mon/Thu | $0.02 | $0.003 | ~$0.046/week |
+| History (100 months) | Mon/Thu | $0.02 | $0.003 | ~$0.046/week |
+| **Estimated per domain per week** | | | | **~$0.23** |
+
+For 15 domains, that is roughly **~$15/month in usage** (plus the **$100/month minimum**).
 
 <Warning>
   The $100/month minimum commitment is charged by DataForSEO regardless of how many backlink requests you make. If your actual usage is below $100, you are still billed $100. Only enable Backlinks if you will use it across enough domains to justify the commitment.
@@ -139,7 +145,7 @@ A single AI Visibility check for a domain typically makes 3 requests and returns
 | ~30 rows @ $0.001 | $0.03 |
 | **Total per check** | **~$0.33** |
 
-Running AI Visibility monthly across 15 domains costs roughly **$5 in usage + $100 minimum = $105/month**.
+Running AI Visibility daily across 15 domains costs roughly **$148.50 in usage + $100 minimum = $248.50/month**.
 
 <Warning>
   AI Optimization's $100/month minimum makes it expensive unless you have clients who specifically need LLM visibility data. Do not enable this feature speculatively.
@@ -149,7 +155,7 @@ Running AI Visibility monthly across 15 domains costs roughly **$5 in usage + $1
 
 To estimate your monthly cost:
 
-1. **Labs (weekly cron):** $0.15 × number of domains × 4.3 weeks
+1. **Labs (daily sync):** $0.136 × number of domains × 30 days + $0.0112 × domains (monthly historical)
 2. **SERP (daily tracking):** cost per keyword × tracked keywords per domain × domains × 30 days
 3. **Backlinks:** $3.96 + $100 minimum (if enabled)
 4. **Site Audit:** cost per page × pages per domain × domains × crawls per month

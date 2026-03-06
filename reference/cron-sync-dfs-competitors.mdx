@@ -1,0 +1,35 @@
+---
+title: "Cron: Sync DataForSEO Tracked Competitors"
+description: "Technical reference for the tracked competitor refresh job at /api/cron/sync-dfs-competitors."
+---
+
+Refreshes cached overview metrics for each website’s configured tracked competitors.
+
+## Endpoint
+
+```text
+GET /api/cron/sync-dfs-competitors
+POST /api/cron/sync-dfs-competitors
+```
+
+**Schedule:** Every Monday at 5:30 AM UTC (`30 5 * * 1`)
+**Max duration:** 300 seconds
+**Auth:** `Authorization: Bearer {CRON_SECRET}`
+
+## What it does
+
+For each target website, the job:
+
+1. Writes a `data_sync_jobs` row (`source=dataforseo`, `feature=competitors`)
+2. Reads competitor domains from `tracked_competitors`
+3. Calls DataForSEO Labs domain overview for each competitor and updates `tracked_competitors` metrics
+4. Updates `website_data_freshness` for `dataforseo/competitors`
+
+## Database tables
+
+| Table | Operation | Purpose |
+|---|---|---|
+| `tracked_competitors` | Read/Update | Store competitor list and cached metrics |
+| `data_sync_jobs` | Insert/Update | Job telemetry (status, errors) |
+| `website_data_freshness` | Upsert | “Last updated” timestamps per feature |
+
